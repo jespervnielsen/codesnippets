@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Locate template.
  * @link https://benmarshall.me/add-wordpress-plugin-template-files/
@@ -18,25 +19,27 @@
  */
 function custom_type_locate_template( $template_name, $template_path = '', $default_path = '' ) {
 	// print_r($template_name);
-  // Set variable to search in the templates folder of theme.
-  if ( ! $template_path ) :
-    $template_path = 'templates/';
-  endif;
-  // Set default plugin templates path.
-  if ( ! $default_path ) :
-    $default_path = PLUGIN_DIR_PATH . 'templates/'; // Path to the template folder
-    // $default_path = plugin_dir_path( __FILE__ ) . 'templates/'; // Path to the template folder
-  endif;
-  // Search template file in theme folder.
-  $template = locate_template( array(
-    $template_path . $template_name,
-    $template_name
-  ) );
-  // Get plugins template file.
-  if ( ! $template ) :
-    $template = $default_path . $template_name;
-  endif;
-  return apply_filters( 'custom_type_locate_template', $template, $template_name, $template_path, $default_path );
+	// Set variable to search in the templates folder of theme.
+	if ( ! $template_path ) :
+		$template_path = 'templates/';
+	endif;
+	// Set default plugin templates path.
+	if ( ! $default_path ) :
+		$default_path = PLUGIN_DIR_PATH . 'templates/'; // Path to the template folder
+		// $default_path = plugin_dir_path( __FILE__ ) . 'templates/'; // Path to the template folder
+	endif;
+	// Search template file in theme folder.
+	$template = locate_template(
+		[
+			$template_path . $template_name,
+			$template_name,
+		]
+	);
+	// Get plugins template file.
+	if ( ! $template ) :
+		$template = $default_path . $template_name;
+	endif;
+	return apply_filters( 'custom_type_locate_template', $template, $template_name, $template_path, $default_path );
 }
 
 /**
@@ -53,16 +56,17 @@ function custom_type_locate_template( $template_name, $template_path = '', $defa
  * @param string  $string $template_path  Path to templates.
  * @param string  $default_path           Default path to template files.
  */
-function custom_type_get_template( $template_name, $args = array(), $tempate_path = '', $default_path = '' ) {
-  if ( is_array( $args ) && isset( $args ) ) :
-    extract( $args );
-  endif;
-  $template_file = custom_type_locate_template( $template_name, $tempate_path, $default_path );
-  if ( ! file_exists( $template_file ) ) :
-    _doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $template_file ), '1.0.0' );
-    return;
-  endif;
-  include $template_file;
+function custom_type_get_template( $template_name, $args = [], $tempate_path = '', $default_path = '' ) {
+	if ( is_array( $args ) && isset( $args ) ) :
+		//@codingStandardsIgnoreLine
+		extract( $args );
+	endif;
+	$template_file = custom_type_locate_template( $template_name, $tempate_path, $default_path );
+	if ( ! file_exists( $template_file ) ) :
+		_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $template_file ), '1.0.0' );
+		return;
+	endif;
+	include $template_file;
 }
 
 /**
@@ -78,16 +82,17 @@ function custom_type_get_template( $template_name, $args = array(), $tempate_pat
  * @return  string          Template file that should be loaded.
  */
 function custom_type_template_loader( $template ) {
-  $find = array();
-  $file = '';
-  if( is_singular('custom_type') ):
-    $file = 'single-custom_type.php';
-  elseif( is_tax('custom_type') ):
-    $file = 'archive-custom_type.php';
-  endif;
-  if ( !empty($file) && file_exists( custom_type_locate_template( $file ) ) ) :
-    $template = custom_type_locate_template( $file );
-  endif;
-  return $template;
+	$find = [];
+	$file = '';
+	if ( is_singular( 'custom_type' ) ) :
+		$file = 'single-custom_type.php';
+	elseif ( is_tax( 'custom_type' ) ) :
+		$file = 'archive-custom_type.php';
+	endif;
+	if ( ! empty( $file ) && file_exists( custom_type_locate_template( $file ) ) ) :
+		$template = custom_type_locate_template( $file );
+	endif;
+	return $template;
 }
+
 add_filter( 'template_include', 'custom_type_template_loader' );
