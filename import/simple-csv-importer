@@ -1,0 +1,40 @@
+<?php
+	
+	/*
+	global $wpdb;
+	
+	if (isset($_POST["submit_csv_upload"]) && isset($_FILES["csv_file"])) {
+		
+		$file_contents_arr = array();
+		$file_handle = fopen($_FILES["csv_file"]["tmp_name"],"r");
+		while(!feof($file_handle)) $file_contents_arr[] = fgetcsv($file_handle,0,";");
+		fclose($file_handle);
+		
+		$user_arr = array();
+		foreach ($file_contents_arr as $arr) {
+			$userdata = array();
+			$userdata["last_name"] = $arr[4];
+			$user_id = wp_insert_user($userdata);
+			
+			//break;
+		}
+		
+		echo "<pre>";
+		//print_r($userdata);
+		echo "</pre>";
+		
+		echo "<p>Imported ".count($file_contents_arr)."</p>";
+		
+	} else {
+		
+		echo "<h2>1. UPLOAD</h2>";
+		
+		echo "<form action='' method='post'  enctype='multipart/form-data'>";
+		echo "<p>Choose csv file: <input type='file' name='csv_file'></p>";
+		echo "<div class='submit'><input type='submit' name='submit_csv_upload' value='Upload CSV-file' /></div>";
+		echo "</form>";
+		
+	}
+	*/
+	
+?>
