@@ -13,7 +13,7 @@
 		$user_arr = array();
 		foreach ($file_contents_arr as $arr) {
 			$userdata = array();
-			$userdata["last_name"] = $arr[4];
+			$userdata["last_name"] = $arr[1];
 			$user_id = wp_insert_user($userdata);
 			
 			//break;
