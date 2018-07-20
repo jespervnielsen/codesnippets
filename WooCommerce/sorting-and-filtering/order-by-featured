@@ -1,0 +1,35 @@
+add_filter( 'the_posts', sort_by_featured', 10, 2 );
+
+
+function sort_by_featured( $posts, $wp_query ) {
+
+	if ( $wp_query->get( 'wc_query' ) != 'product_query' ) {
+		return $posts;
+	}
+
+	$existing_products = wp_list_pluck( $posts, 'ID' );
+
+	$featured_query = new WP_Query( [
+		'post_type'      => 'product',
+		'posts_per_page' => 8,
+		//'post__not_in'   => $existing_products,
+		'tax_query'      => [
+			[
+				'taxonomy' => 'product_visibility',
+				'field'    => 'slug',
+				'terms'    => 'featured',
+			],
+		],
+	] );
+
+	if ( ! $featured_query->have_posts() ) {
+		return $posts;
+	}
+  
+  //mayby remove featured products from $posts array ? then loop over and unset.
+
+	$featured_products = $featured_query->get_posts();
+	$combined_products = array_merge( $featured_products, $posts );
+
+	return array_slice( $combined_products, 0, 8 );
+}
