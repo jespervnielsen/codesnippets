@@ -1,3 +1,4 @@
+<?php
 add_filter( 'the_posts', sort_by_featured', 10, 2 );
 
 
