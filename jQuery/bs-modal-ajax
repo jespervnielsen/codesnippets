@@ -1,0 +1,43 @@
+/*
+This function is an example on how to ajaxify, a bootstrap modal window.
+We create the modal, and updates it.
+*/
+(function ($) {
+  var modal_cache = [];
+
+  //@todo - maybe move this to php?
+  $('#page').append('<div id="custom-modal" tabindex="-1" role="dialog" class="modal"><div class="modal-dialog modal-dialog modal-lg"><div class="modal-content modal-content"><div class="modal-header modal-header"><div><h4 class="modal-title modal-title">Add New Customer</h4><a class="btn close" data-dismiss="modal"><i class="icon-times" title="Close"></i></a></div></div><div class="modal-body modal-body">Jesper</div><div class="modal-footer modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div></div></div></div>');
+
+  modal = $('#custom-modal');
+  $(modal).modal({
+    backdrop: true,
+    focus: true,
+    show: false,
+  });
+
+  $(document).on('click', '[data-action="show-custom-modal"]', function () {
+
+    var product_id = $(this).data('productid');
+
+    //clear modal:
+    update_modal({ title: 'Loading', content: '...' });
+    modal.modal('show');
+    
+    //change url to correct ajaxurl
+    $.getJSON(POS.options.ajaxurl, {
+      'action': 'get_modal_content',
+      'template': 'products/metadata',
+      'product_id': product_id
+    }).done(function (response) {
+      //@TODO cache result
+      update_modal(response.modal);
+    })
+
+  });
+
+  function update_modal(modal_settings) {
+    $(modal).find('.modal-title').html(modal_settings.title)
+    $(modal).find('.modal-body').html(modal_settings.content)
+  }
+
+})(jQuery);
