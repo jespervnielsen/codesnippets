@@ -3,7 +3,7 @@
  */
 function ToggleFilters($) {
   'use strict';
-  console.log('jj');
+
   $(".widget_layered_nav").addClass('filter-toggler').each(function () {
 
     //close all, where there not is an chosen item. = keep all chosen filters open
