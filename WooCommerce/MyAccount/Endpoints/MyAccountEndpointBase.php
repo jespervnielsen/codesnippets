@@ -1,6 +1,6 @@
 <?php
 
-namespace APP\PluginName\Core\Abstracts\WooCommerce;
+namespace APP\PluginName\Core\WooCommerce\Endpoints;
 
 //This is how I stucture my plugins, and wont work for others, without the Plugin file, in same namespace
 //use APP\PluginName\Plugin;
