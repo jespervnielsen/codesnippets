@@ -230,7 +230,7 @@ abstract class MyAccountEndpointBase {
 		$value_arr['current_endpoint_object'] = $this;
 		ob_start();
 
-    /**
+    /*
     Here should the output be.
     Ideally included using include_once or something similar, but that is up to you, and your workflow.
     
