@@ -17,6 +17,11 @@ jQuery('input[name*="email"]').each( function() {
 jQuery('input[name*="email_confirm"]').each( function() {
 	jQuery(this).val(jQuery('input[name*="email"]').val() );
 });
+
+jQuery('input[type*="password"]').each( function() {
+	jQuery(this).val('strongpassword');
+});
+
 jQuery('input[name*="name"]').each(function() {
 	var randno = Math.floor ( Math.random() * quotes.length );
 	jQuery(this).val(quotes[randno] + Math.floor((Math.random() * 100000) + 1));
@@ -95,6 +100,9 @@ jQuery('.ginput_container_email input[type="text"]').each(function() {
 
 	jQuery(this).val('jvn+test' + Math.floor((Math.random() * 100000) + 10000) + '@peytz.dk' );
 });
+jQuery('.ginput_container_website input[type="text"]').each(function() {
+	jQuery(this).val('https://google.dk' );
+});
 jQuery('.ginput_container_date input[type="text"]').each(function() {
 	var day = Math.floor((Math.random() * 30) + 1);
 	var month = Math.floor((Math.random() * 12) + 1);
@@ -109,3 +117,6 @@ jQuery('.ginput_container_textarea textarea').each(function() {
 	jQuery(this).val( Math.floor((Math.random() * 100000000) + 1000));
 	jQuery(this).html( Math.floor((Math.random() * 10000000) + 1000));
 });
+
+//now wemove requirements
+// jQuery('.ginput_container_textarea textarea')
