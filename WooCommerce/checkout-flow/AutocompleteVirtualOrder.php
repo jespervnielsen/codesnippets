@@ -11,10 +11,10 @@ use WC_Email_Customer_Invoice;
 class AutoCompleteVirtualOrder {
 
 	public function __construct() {
-		add_action( 'woocommerce_thankyou', [ $this, 'auto_complete_order' ] );
+		add_action( 'woocommerce_thankyou', [ __CLASS__, 'auto_complete_order' ] );
 	}
 
-	public function auto_complete_order( $order_id ) {
+	public static function auto_complete_order( $order_id ) {
 		if ( ! $order_id ) {
 			return;
 		}
