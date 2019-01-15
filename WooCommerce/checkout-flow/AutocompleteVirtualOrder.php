@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WC_Email_Customer_Invoice;
 
-class AutoCompleteOrder {
+class AutoCompleteVirtualOrder {
 
 	public function __construct() {
 		add_action( 'woocommerce_thankyou', [ $this, 'auto_complete_order' ] );
@@ -53,4 +53,4 @@ class AutoCompleteOrder {
 
 }
 
-$autocomplete_order = new AutoCompleteOrder();
+$autocomplete_order = new AutoCompleteVirtualOrder();
