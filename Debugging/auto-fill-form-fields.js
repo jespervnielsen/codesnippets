@@ -52,9 +52,11 @@ $(function(){
             .attr('checked','checked');
     });
 });
+
 jQuery('select option:nth-of-type(2)').each(function() {
 	jQuery(this).prop('selected', 'selected').trigger("click");
 });
+
 var year=2017;
 jQuery('.hasDatepicker').each(function() {
 	var day = Math.floor((Math.random() * 20) + 10);
@@ -112,6 +114,16 @@ jQuery('.ginput_container_date input[type="text"]').each(function() {
 	var year = Math.floor((Math.random() * 3) + 2017);
 	jQuery(this).val(day + '.' + month + '.' + year );
 });
+
+jQuery('.gfield_time_hour.ginput_container_time input[type="text"]').each(function() {
+	var hour = Math.floor((Math.random() * 10) + 1);
+	jQuery(this).val( hour );
+});
+jQuery('.gfield_time_minute.ginput_container_time input[type="text"]').each(function() {
+	var minute = Math.floor((Math.random() * 55) + 1);
+	jQuery(this).val( minute );
+});
+
 jQuery('.ginput_container_number input[type="text"]').each(function() {
 	jQuery(this).val( Math.floor((Math.random() * 100000) + 250));
 });
