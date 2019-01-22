@@ -66,9 +66,6 @@ jQuery('.hasDatepicker').each(function() {
 
 
 
-
-
-
 jQuery('.ginput_container_text input[type="text"]').each(function() {
 	var randno = Math.floor ( Math.random() * quotes.length );
 	jQuery(this).val(quotes[randno] + Math.floor((Math.random() * 100000) + 1));
@@ -100,6 +97,12 @@ jQuery('.ginput_container_email input[type="text"]').each(function() {
 
 	jQuery(this).val('jvn+test' + Math.floor((Math.random() * 100000) + 10000) + '@peytz.dk' );
 });
+
+jQuery('.ginput_complex.ginput_container_email').each( function() {
+	var first_mail = jQuery(this).find( 'input' ).first().val();
+	jQuery(this).find( 'input' ).val( first_mail )
+});
+
 jQuery('.ginput_container_website input[type="text"]').each(function() {
 	jQuery(this).val('https://google.dk' );
 });
