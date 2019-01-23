@@ -1,6 +1,7 @@
 <?php
 
 namespace AutocompleteOrders;
+use WC_Email_Customer_Invoice;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
