@@ -133,5 +133,10 @@ jQuery('.ginput_container_textarea textarea').each(function() {
 	jQuery(this).html( Math.floor((Math.random() * 10000000) + 1000));
 });
 
+//Stupid honeypot, needs to be cleared ofcourse...
+jQuery('.gform_validation_container input[type="text"]').each(function() {
+	jQuery(this).val('');
+});
+
 //now wemove requirements
 // jQuery('.ginput_container_textarea textarea')
