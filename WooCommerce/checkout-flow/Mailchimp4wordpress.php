@@ -1,6 +1,6 @@
 <?php
 namespace ModifyMailchimp4WooCommerce;
-class mailchimp4wordpress {
+class Mailchimp4Wordpress {
 
 	/**
 	 * Constructor
