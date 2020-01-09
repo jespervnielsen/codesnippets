@@ -30,21 +30,15 @@ class CustomCommand {
 								'synopsis' => [
 									[
 										'type'        => 'positional',
-										'name'        => 'assoc_arg_1',
+										'name'        => 'arg_1',
 										'description' => 'first positional arg',
 										'optional'    => false,
 									],
 									[
-										'type'        => 'positional',
-										'name'        => 'assoc_arg_2',
+										'type'        => 'assoc',
+										'name'        => 'assoc_arg_1',
 										'description' => 'second positional arg',
 										'optional'    => false,
-									],
-									[
-										'type'        => 'positional',
-										'name'        => 'assoc_arg_3',
-										'description' => 'third positional arg',
-										'optional'    => true,
 									],
 								],
 			]
@@ -53,8 +47,8 @@ class CustomCommand {
 
 	public static function trigger_command( $args = [], $assoc_args = [] ) {
 
-		list( $assoc_arg_1, $assoc_arg_2, $assoc_arg_3) = $args; //list, the assoc_args (positional args), to variables. names should match names in synopsis array
-
+		list( $arg_1) = $args; //list, the args (positional args), to variables. names should match names in synopsis array
+		$assoc_arg_1 = $assoc_args['assoc_arg_1'] ?? null; //get one assoc arg, and set default value to null
 		// Add functionality here
 	}
 
