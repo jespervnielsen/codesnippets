@@ -27,7 +27,6 @@ class CustomCommand {
 			[ __CLASS__, 'trigger_command' ],
 			[
 				'shortdesc'                => 'My synopsis',
-				//update form on (to)
 								'synopsis' => [
 									[
 										'type'        => 'positional',
