@@ -22,7 +22,6 @@ class CustomCommand {
 			return;
 		}
 
-		// add_action('run_groups_import', [__CLASS__, 'run_import' ] );
 		WP_CLI::add_command(
 			'pco appname command-name',
 			[ __CLASS__, 'trigger_command' ],
