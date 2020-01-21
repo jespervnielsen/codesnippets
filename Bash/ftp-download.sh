@@ -6,7 +6,9 @@ wget -r --user="username" --password="password" ftp://example.com/ -m
 //-m is for --mirror, to mirror the entire ftp location
 
 //rsync - by ftp, or ssh. - requires rsync in install on remote server - usefull to only download files that not exists local
-rsync -r -a -v -e "ssh" --delete username@x.x.x.x:/var/www/domainpath /dump
+//-e "ssh for ssh. 
+// --delete is for local delete, if there is files on local, that exists, but not on server.
+rsync -r -a -v -e "ssh" --delete username@x.x.x.x:/var/www/domainpath ./dump
 
 //ssh
 scp -r username@x.x.x.x:/var/www/domainpath .
