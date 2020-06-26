@@ -12,11 +12,65 @@ use WC_Email_Customer_Invoice;
 class AutoCompleteVirtualOrder {
 
 	public function __construct() {
-		add_action( 'woocommerce_thankyou', [ __CLASS__, 'auto_complete_order' ] );
+
+		$this->init();
 	}
 
+	/**
+	 * Run hooks.
+	 */
+	public function init() {
+		//Autocomplete virtual orders
+		add_action( 'woocommerce_thankyou', [ __CLASS__, 'auto_complete_order' ], 50 ); // Dont run on woocommerce_before_thankyou, since the order might have failed. - and the triggers regarding payments havent run yet.
+
+		//maybe set bambora "instantcapture" when sending payment request, if the order only contains virtual orders
+		// add_filter('woocommerce_get_checkout_payment_url', [ __CLASS__, 'auto_complete_order' ], 50 )
+
+	}
+
+	/**
+	 * Autocomplete order
+	 *
+	 * @param int $order_id
+	 * @return void
+	 */
 	public static function auto_complete_order( $order_id ) {
+		
 		if ( ! $order_id ) {
+			return;
+		}
+
+		$order = wc_get_order( $order_id );
+
+		$valid_statuses = [
+			// 'pending', //we dont want to complete if we are waiting for pending payments
+			'processing',
+		];
+
+		if ( ! in_array( $order->get_status(), $valid_statuses ) ) {
+			return;
+		}
+
+		/**
+		 * Bambora online classic, + WooCommerce Subscripts, then this fucks up, cause bambora checks if a parent order exist, then payment is needed. - even through we just payed. in that case, remove it
+		 */
+		if( $order->needs_payment() ) {
+		 	return;
+		}
+
+		$items                   = $order->get_items();
+		$has_non_virtual_product = false;
+
+		foreach ( $items as $item ) {
+
+			$product = $item->get_product();
+
+			if ( ! $product->is_virtual() ) {
+				$has_non_virtual_product = true;
+			}
+		}
+
+		if ( $has_non_virtual_product ) {
 			return;
 		}
 
@@ -25,33 +79,12 @@ class AutoCompleteVirtualOrder {
 			( WC() )->mailer();
 		}
 
-		$order                   = wc_get_order( $order_id );
-		$items                   = $order->get_items();
-		$has_non_virtual_product = false;
-
-		foreach ( $items as $item ) {
-
-			if ( 0 != $item->get_variation_id() ) {
-				$product_id = $item->get_variation_id();
-			} else {
-				$product_id = $item->get_product_id();
-			}
-
-			$product = wc_get_product( $product_id );
-
-			if ( ! $product->is_virtual() ) {
-				$has_non_virtual_product = true;
-			}
-		}
-
-		if ( ! $has_non_virtual_product && ! $order->needs_payment() ) {
-			$order->update_status( 'completed' );
-			$email_ci = new WC_Email_Customer_Invoice();
-			$email_ci->trigger( $order_id );
-		}
-
+		$order->update_status( 'completed' );
+		$email_ci = new WC_Email_Customer_Invoice();
+		$email_ci->trigger( $order_id );
+		return true;
 	}
-
+	
 }
 
 $autocomplete_order = new AutoCompleteVirtualOrder();
