@@ -41,8 +41,6 @@ class AutoCompleteVirtualOrder {
 
 		$order = wc_get_order( $order_id );
 
-		// d( $order, $order->get_status() );
-
 		$valid_statuses = [
 			// 'pending', //we dont want to complete if we are waiting for pending payments
 			'processing',
