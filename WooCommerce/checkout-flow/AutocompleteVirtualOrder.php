@@ -11,7 +11,7 @@ use WC_Email_Customer_Invoice;
 
 class AutoCompleteVirtualOrder {
 
-	public function __construct() {
+		public function __construct() {
 
 		$this->init();
 	}
@@ -35,28 +35,36 @@ class AutoCompleteVirtualOrder {
 	 * @return void
 	 */
 	public static function auto_complete_order( $order_id ) {
-		
 		if ( ! $order_id ) {
 			return;
 		}
 
 		$order = wc_get_order( $order_id );
 
+		// d( $order, $order->get_status() );
+
 		$valid_statuses = [
 			// 'pending', //we dont want to complete if we are waiting for pending payments
 			'processing',
 		];
+
+		/**
+		 * If we are on our local enviroment, the payment is beeing faked on a seperate callback for bambora, but then the status is still pending
+		 */
+		if( defined('PCO_ENV') && PCO_ENV == 'dev' ) {
+			$valid_statuses[] = 'pending';
+		}
 
 		if ( ! in_array( $order->get_status(), $valid_statuses ) ) {
 			return;
 		}
 
 		/**
-		 * Bambora online classic, + WooCommerce Subscripts, then this fucks up, cause bambora checks if a parent order exist, then payment is needed. - even through we just payed. in that case, remove it
+		 * Bambora online classic, + WooCommerce Subscripts, then this fucks up, cause bambora checks if a parent order exist, then payment is needed. - even through we just payed.
 		 */
-		if( $order->needs_payment() ) {
-		 	return;
-		}
+		// if( $order->needs_payment() ) {
+		// 	return;
+		// }
 
 		$items                   = $order->get_items();
 		$has_non_virtual_product = false;
@@ -80,8 +88,21 @@ class AutoCompleteVirtualOrder {
 		}
 
 		$order->update_status( 'completed' );
-		$email_ci = new WC_Email_Customer_Invoice();
-		$email_ci->trigger( $order_id );
+
+		/**
+		 * Should we send out an invoice?
+		 * Make sure, you dont send double emails, if other configuration also sends out an email
+		 */
+		// $email_ci = new WC_Email_Customer_Invoice();
+		// $email_ci->trigger( $order_id );
+
+		/**
+		 * Should we send out ourder completed for customer?
+		 * Make sure, you dont send double emails, if other configuration also sends out an email
+		 */
+		// $email_ci = new WC_Email_Customer_Invoice();
+		// $email_ci->trigger( $order_id );
+
 		return true;
 	}
 	
