@@ -7,7 +7,7 @@ Usage example:
 $query_args = [
 'post_type' => 'post'
 ];
-$posts = Transient::cache( 'video' . md5(json_encode($query_args ) ), (HOUR_IN_SECONDS / 4), function() use ( $query_args ) {  get_posts( $params ); }, true );
+$posts = Transient::cache( 'videosblock_' . md5(json_encode($query_args ) ), (HOUR_IN_SECONDS / 4), function() use ( $query_args ) {  get_posts( $params ); }, true );
 
 */
 
