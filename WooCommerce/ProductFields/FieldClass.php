@@ -61,6 +61,7 @@ class HelperText {
 
 	public function __construct() {
 		$this->init();
+		add_action( 'plugins_loaded', [ $this, 'init' ] ); // run on plugins loaded, to be sure we have woocommerce
 	}
 
 	public static function get_key() {
@@ -87,10 +88,6 @@ class HelperText {
 	 * Run core bootstrap hooks.
 	 */
 	public function init() {
-
-		if ( ! class_exists( 'WooCommerce' ) ) {
-			return;
-		}
 
 		/**
 		 * Simple Products
