@@ -3,23 +3,21 @@
 namespace TransientCache;
 
 /**
-Usage example:
-$query_args = [
-'post_type' => 'video'
-];
-
-$my_data = Transient::cache(
-	'key_prefix' . md5( json_encode( $params ) ), // key
-	VideoPostType::get_post_type(), // group - no-group | posttypes | custom-posttype-key
-	3 * HOUR_IN_SECONDS, // TTL
-	function() use ( $params ) { // Callback
-		return $my_data;
-	},
-	false // dont force caching
-);
-
+ * /**
+ * Usage example:
+ * $query_args = [
+ *  'post_type' => 'video'
+ * ];
+ * $my_data = Transient::cache(
+ *	'key_prefix' . md5( json_encode( $params ) ), // key
+ *	VideoPostType::get_post_type(), // group - no-group | posttypes | custom-posttype-key
+ *	3 * HOUR_IN_SECONDS, // TTL
+ *	function() use ( $params ) { // Callback
+ *		return $my_data;
+ *	},
+ *	false // dont force caching
+ *);
 */
-
 
 class TransientCache  {
 
