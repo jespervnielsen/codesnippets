@@ -20,16 +20,33 @@ class AutoCompleteVirtualOrder {
 	 * Run hooks.
 	 */
 	public function init() {
-		//Autocomplete virtual orders
-		add_action( 'woocommerce_thankyou', [ __CLASS__, 'auto_complete_order' ], 50 ); // Dont run on woocommerce_before_thankyou, since the order might have failed. - and the triggers regarding payments havent run yet.
+		//Autocomplete virtual orders, by only requiring that a product is virtual in order not to require proccessing
+		add_filter('woocommerce_order_item_needs_processing', [__CLASS__, 'order_item_needs_proccessing' ], 10, 3);
 
-		//maybe set bambora "instantcapture" when sending payment request, if the order only contains virtual orders
-		// add_filter('woocommerce_get_checkout_payment_url', [ __CLASS__, 'auto_complete_order' ], 50 )
-
+		// @NOTE - This was the old way, before woocommerce introduced the nessary hook. keeping this around for documentation
+		// add_action( 'woocommerce_payment_complete', [ __CLASS__, 'auto_complete_order' ], 50 ); // Dont run on woocommerce_before_thankyou, since the order might have failed. - and the triggers regarding payments havent run yet.
 	}
 
 	/**
-	 * Autocomplete order
+	 * Let us only dependt on a product only should virtual in order to allow for an order to be autocompleted - then WooCommerce handles the rest
+	 * Woocommerce default requires a product to be downloadable AND virtual before autocomplete.
+	 *
+	 * @param bool $needs_processing
+	 * @param object $product
+	 * @param integer $order_id
+	 * @return bool
+	 */
+	public static function order_item_needs_proccessing( $needs_processing, $product,$order_id ) {
+		$needs_processing = ! $product->is_virtual();
+		/**
+		 * If we are on our local enviroment, the payment is beeing faked on a seperate callback for bambora, but then the status is still pending when visiting the thankyou page. - if so, reload thankyou page, and it should have correct status
+		 */
+		return $needs_processing;
+	}
+
+	/**
+	 * Autocomplete order - OLD WAY keeping this around for documentation
+	 *  This was the old way, before woocommerce introduced the nessary hook.
 	 *
 	 * @param int $order_id
 	 * @return void
