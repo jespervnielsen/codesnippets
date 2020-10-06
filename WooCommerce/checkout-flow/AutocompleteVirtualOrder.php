@@ -32,7 +32,7 @@ class AutoCompleteVirtualOrder {
 	}
 
 	/**
-	 * Let us only dependt on a product only should virtual in order to allow for an order to be autocompleted - then WooCommerce handles the rest
+	 * Let us only dependt on a product only should be virtual in order to allow for an order to be autocompleted - then WooCommerce handles the rest
 	 * Woocommerce default requires a product to be downloadable AND virtual before autocomplete.
 	 *
 	 * @param bool $needs_processing
