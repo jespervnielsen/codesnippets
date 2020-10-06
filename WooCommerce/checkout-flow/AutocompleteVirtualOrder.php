@@ -7,8 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-use WC_Email_Customer_Invoice;
-
+/**
+ * Class to autocomplete virtual orders.
+ * WooCommerce only autocompletes if an order is virtual AND downloadable.
+ *
+ * @Note - this needs to be able to run in both frontend/admin/cli ect.
+ */
 class AutoCompleteVirtualOrder {
 
 		public function __construct() {
@@ -123,4 +127,4 @@ class AutoCompleteVirtualOrder {
 	
 }
 
-$autocomplete_order = new AutoCompleteVirtualOrder();
+new AutoCompleteVirtualOrder();
