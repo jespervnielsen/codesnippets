@@ -24,10 +24,20 @@ class TransientCache  {
 	private static $namespace = 'pco_mu_';
 
 	public function __construct() {
+		/**
+		 * Posts
+		 */
 		add_action( 'save_post', [ __CLASS__, 'save_post' ] );
 		add_action( 'edit_post', [ __CLASS__, 'save_post' ] );
 		add_action( 'deleted_post', [ __CLASS__, 'save_post' ] );
 		add_action( 'delete_attachment', [ __CLASS__, 'save_post' ] );
+
+
+		/**
+		 * Gravityforms
+		 */
+		add_action('gform_post_update_form_meta', [ __CLASS__, 'save_gravityforms_form' ], 50, 3);
+
 	}
 
 	private static function transient_key( string $key, $group = 'no-group' ): string {
@@ -60,7 +70,6 @@ class TransientCache  {
 	 * Invalidate cache group.
 	 *
 	 * @param string $group Group of cache to clear.
-	 * @since 3.9.0
 	 */
 	public static function invalidate_cache_group( $group ) {
 		set_transient( self::get_namespace() . $group . '_cache_timestamp_prefix', microtime(), DAY_IN_SECONDS );
@@ -105,11 +114,9 @@ class TransientCache  {
 	 */
 	public static function cache( string $key, $group, int $ttl, callable $function, bool $force_cache = false ) {
 		if ( is_user_logged_in() && ! $force_cache ) {
-			// d( 'no-cache');
 			return call_user_func( $function );
 		}
 
-		// $key  = self::transient_key($key);
 		$data = self::get( $key, $group );
 
 		if ( empty( $data ) ) {
@@ -122,13 +129,27 @@ class TransientCache  {
 
 	public static function save_post( $post_id ) {
 		$groups = [
-			'no-group',
 			'posttypes',
 		];
 
 		$groups[] = get_post_type( $post_id );
 		// $taxonomies = get_post_taxonomies( $post_id );
 
+		self::invalidate_cache_groups( $groups );
+	}
+
+	public static function save_gravityforms_form( $form_meta, $form_id, $meta_name ) {
+		$groups = [
+			'gravityforms-forms',
+		];
+
+		$groups[] = 'gravityforms-forms-' . $form_id;
+
+		self::invalidate_cache_groups( $groups );
+	}
+
+	public static function invalidate_cache_groups( array $groups = [] ) {
+		$groups[] = 'no-group';
 		foreach ( $groups as $group ) {
 			self::invalidate_cache_group( $group );
 		}
