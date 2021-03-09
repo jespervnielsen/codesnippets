@@ -1,7 +1,6 @@
 <?php
 
 namespace TransientCache;
-
 /**
  * /**
  * Usage example:
@@ -10,7 +9,7 @@ namespace TransientCache;
  * ];
  * $my_data = Transient::cache(
  *	'key_prefix' . md5( json_encode( $params ) ), // key
- *	VideoPostType::get_post_type(), // group - no-group | posttypes | custom-posttype-key
+ *	VideoPostType::get_post_type(), // group - no-group | posttypes | custom-posttype-key | gravityforms-forms | gravityforms-form-7
  *	3 * HOUR_IN_SECONDS, // TTL
  *	function() use ( $params ) { // Callback
  *		return $my_data;
@@ -143,7 +142,7 @@ class TransientCache  {
 			'gravityforms-forms',
 		];
 
-		$groups[] = 'gravityforms-forms-' . $form_id;
+		$groups[] = 'gravityforms-form-' . $form_id;
 
 		self::invalidate_cache_groups( $groups );
 	}
