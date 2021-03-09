@@ -2,6 +2,7 @@
 
 namespace TransientCache;
 /**
+ * Remember to bootstrap this class, in order for it to work correctly
  * /**
  * Usage example:
  * $query_args = [
