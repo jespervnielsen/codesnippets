@@ -110,6 +110,17 @@ class HelperText {
 		add_action( 'manage_posts_custom_column', [ $this, 'populate_field_column' ], 10, 2 );
 
 	}
+	
+	public function field_output( $args ) {
+
+		$field = self::get_type();
+
+		if ( ! is_callable( $field ) ) {
+			return;
+		}
+
+		call_user_func( $field, $args );
+	}
 
 	public function simple_field() {
 
@@ -119,9 +130,7 @@ class HelperText {
 			'label' => self::get_name(),
 		];
 
-		$field = self::get_type();
-
-		$field( $args );
+		$this->field_output( $args );
 	}
 
 	public function save_simple_field( $product_id ) {
@@ -150,10 +159,7 @@ class HelperText {
 			'wrapper_class' => 'form-row',
 		];
 
-		$field = self::get_type();
-
-		$field( $args );
-
+		$this->field_output( $args );
 	}
 
 	/**
