@@ -31,7 +31,9 @@ class HelperText {
 	 * woocommerce_wp_select
 	 * woocommerce_wp_radio
 	 *
-	 * @var string
+	 * Callback function to call with field args
+	 *
+	 * @var callback
 	 */
 	public static $field_type = 'woocommerce_wp_textarea_input';
 	/**
