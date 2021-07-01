@@ -8,16 +8,16 @@
 public function get_primary_category( $post = null ) : object {
 	$post = get_post( $post );
 
-	$terms = (array) get_the_category( $post->ID );
-
 	$yoast_primary_category_id = get_post_meta( $post->ID, '_yoast_wpseo_primary_category', true );
 
-	// Find if primary term is part post terms.
-	foreach ( $terms as $term ) {
-		if ( $term->term_id == $yoast_primary_category_id ) {
+	if ( $yoast_primary_category_id ) {
+		$term = get_term( $yoast_primary_category_id );
+		if ( $term && ! is_wp_error( $term ) ) {
 			return $term;
 		}
 	}
+
+	$terms = (array) get_the_category( $post->ID );
 
 	// Primary category not found. return first term;
 	foreach ( $terms as $term ) {
@@ -28,5 +28,4 @@ public function get_primary_category( $post = null ) : object {
 	// Find "default" term
 	$default_category = get_option( 'default_category' );
 	return get_term( $default_category );
-
 }
