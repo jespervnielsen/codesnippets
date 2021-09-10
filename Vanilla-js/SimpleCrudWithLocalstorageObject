@@ -1,0 +1,86 @@
+const SN = {
+			/**
+			 * Internal storage key
+			 */
+			_storageKey: 'SN',
+
+			/**
+			 * Internal data storage. Please use Set(), Get() and Delete()
+			 */
+			_data: {},
+
+			/**
+			 * Set a property on the object.
+			 * @Note - we dont support "dot notation"
+			 */
+			set(property, value) {
+				SN._data[property] = value;
+				// Update our local storage
+				SN._updateLocalStorage();
+			},
+			/**
+			 * Get a property from the object
+			 * @Note - we dont support "dot notation"
+			 */
+			get(property, defaultValue = undefined) {
+				// console.log(property, defaultValue);
+				storagedData = SN._getLocalStorage();
+				// If our storagedData is empty or wrong, then set it back to default
+				if (typeof storagedData !== 'object' || storagedData === null) {
+					storagedData = {}; // Set default data;
+				}
+				// If all or nothing is called, then return all
+				if (property == 'all' || property === undefined) {
+					return storagedData;
+				}
+				// if we have a object, but the value is not set, used the default value
+				if (storagedData[property] === undefined) {
+					return defaultValue;
+				}
+				return storagedData[property];
+			},
+			/**
+			 * Helper function to get all data
+			 */
+			getAll() {
+				return SN.get('all');
+			},
+			/**
+			 * Delete a property from the object
+			 */
+			delete(property) {
+				if (property == 'all' || property === undefined) {
+					SN._data = {}; // Set default data
+					localStorage.removeItem(SN._storageKey);
+					return true;
+				}
+				delete SN._data[property];
+
+				SN._updateLocalStorage();
+				return true;
+			},
+			/**
+			 * Delete all properties from the object
+			 */
+			deleteAll() {
+				return SN.delete('all');
+			},
+			/**
+			 * Fetch from our local storage
+			 */
+			_getLocalStorage() {
+				// return JSON.parse(localStorage.getItem(SN._storageKey));
+				current = localStorage.getItem(SN._storageKey);
+				if (!current) {
+					current = {} // Set default data
+					localStorage.setItem(SN._storageKey, JSON.stringify(current));
+				}
+				return current;
+			},
+			_updateLocalStorage() {
+				if ( ! SN._data ) {
+					SN._data = {}
+				}
+				localStorage.setItem(SN._storageKey, JSON.stringify(SN._data));
+			}
+		}
