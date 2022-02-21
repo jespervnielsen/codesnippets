@@ -1,0 +1,48 @@
+version: '3'
+
+# https://dev.to/truthseekers/setup-a-basic-local-php-development-environment-in-docker-kod
+
+services:
+  webservice:
+    # image: php:7.4-apache
+    # command:
+      # - docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # depends_on:
+    # - database
+    volumes:
+      # - webservice:/frontend/
+      - .:/usr/local/apache2/htdocs
+      # - webservice:/var/www/html/
+      - ./frontend:/var/www/html
+      # - wordpress_data:/.
+    # ports:
+      # - "8000:80"
+    labels:
+      # This is enableing treafik to proxy this service
+      - "traefik.enable=true"
+      # ..
+      # - "traefik.http.routers.a.entrypoints=web"
+      # Here we have to define the URL
+      - traefik.http.routers.a.rule=Host(`a.localhost`)
+      # Here we are defining wich entrypoint should be used by clients to access this service
+      # - "traefik.http.routers.a.entrypoints=peytzwp"
+      # Here we define in wich network treafik can find this service
+      # - "traefik.docker.network=peytzwp"
+      # This is the port that traefik should proxy
+      - "traefik.http.services.a.loadbalancer.server.port=80"
+    restart: always
+    networks:
+      - peytzwp
+
+volumes:
+  webservice: {}
+  # wordpress_data: {}
+
+networks:
+  peytzwp:
+    external: true
+

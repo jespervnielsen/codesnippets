@@ -1,0 +1,110 @@
+version: '3'
+
+networks:
+  peytzwp:
+    name: peytzwp
+    driver: bridge
+    attachable: true
+
+services:
+  # ------------- Proxy -------------
+  reverse-proxy:
+    image: traefik:v2.6
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # - "./traefik.yml:/traefik.yml:ro"
+    networks:
+      - peytzwp
+
+  #------------- DATABASE STACK -------------
+  #------------- DATABASE -------------
+  database:
+    image: mysql:5.7
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+    # build:
+      # context: "./bin/${DATABASE}"
+    # container_name: 'database-wp'
+    # ports:
+      # - "127.0.0.1:${HOST_MACHINE_MYSQL_PORT}:3306"
+    # expose:
+      # - "${HOST_MACHINE_MYSQL_PORT}"
+    # volumes:
+      # - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
+      # - mysql-data:/var/lib/mysql
+      # - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+        # - logvolume01:/var/log
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_USER: root
+      # MYSQL_DATABASE: ${MYSQL_DATABASE}
+      # MYSQL_USER: 'user5.7'
+      # MYSQL_PASSWORD: 'docker'
+    networks:
+      - peytzwp
+
+  # ------------- PHPMYADMIN -------------
+  phpmyadmin:
+    depends_on:
+      - database
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    links:
+      - database:db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.localhost`)"
+    networks:
+      - peytzwp
+
+# ------------- REDIS STACK -------------
+  # ------------- REDIS -------------
+  redis:
+    image: 'bitnami/redis:latest'
+    ports:
+      - '6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes # dont care about pw locally
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+    # let redis act as memcached, so we have a maxlimit of storage usage on our machines, and rotates by "last read unit"
+    command: /opt/bitnami/scripts/redis/run.sh --maxmemory 100mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - peytzwp
+
+# ------------- REDIS COMMANDER -------------
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
+    labels:
+      # Not working at the moment. use http://127.0.0.1:8081 instead
+      - "traefik.enable=true"
+      - "traefik.http.routers.redis-commander.rule=Host(`redis-commander.localhost`)"
+      - "traefik.http.routers.redis-commander.service=redis-commander-svc"
+      - "traefik.http.services.redis-commander-svc.loadbalancer.server.port=8081"
+      # - traefik.port=8081
+    depends_on:
+      - redis
+    networks:
+      - peytzwp
+
+volumes:
+  mysql-data:
+  # elasticsearch-data:
+  # opensearch-data1:
+  # opensearch-data2:
+  redis-data:
+    driver: local
