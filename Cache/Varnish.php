@@ -13,7 +13,7 @@ class Varnish {
 	 */
 	public function init() {
     
-    // Append on varnish-http-purge plugin
+    		// Append on varnish-http-purge plugin
 		add_filter( 'vhp_purge_urls', [$this,'add_urls_to_purge'], 10, 2 );
 	}
 
